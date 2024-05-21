@@ -19,7 +19,7 @@ def download():
 
         # Stream the video directly to the client without saving to disk
         video_stream = BytesIO()
-        video_stream.write(video.stream_to_buffer())
+        video.stream_to_buffer(video_stream)
         video_stream.seek(0)
 
         # Set Content-Disposition header to force download
