@@ -1,12 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, send_file
 from pytube import YouTube
-from flask_sslify import SSLify
 import os
 
 
 app = Flask(__name__)
-
-sslify = SSLify(app)
 
 
 @app.route('/')
@@ -23,3 +20,6 @@ def download():
         return send_file(video_path, as_attachment=True)
     else:
         return redirect(url_for('index'))
+
+if __name__ == "__main__":
+    app.run()
