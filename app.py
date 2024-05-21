@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, send_file
 from pytube import YouTube
-import os
+from io import BytesIO
 
 
 app = Flask(__name__)
@@ -16,10 +16,14 @@ def download():
         youtube_url = request.form.get('url')
         yt = YouTube(youtube_url)
         video = yt.streams.get_highest_resolution()
-        video_path = video.download(output_path='./downloads')
-        return send_file(video_path, as_attachment=True)
-    else:
-        return redirect(url_for('index'))
+
+        # Stream the video directly to the client without saving to disk
+        video_stream = BytesIO()
+        video_stream.write(video.stream_to_buffer())
+        video_stream.seek(0)
+
+        # Set Content-Disposition header to force download
+        return send_file(video_stream, attachment_filename=f"{yt.title}.mp4", as_attachment=True)
 
 if __name__ == "__main__":
     app.run()
